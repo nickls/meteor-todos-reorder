@@ -181,6 +181,15 @@ h3 {
     width: 20px;
 }
 
+#item-list .todo .reorder {
+    cursor: move;
+    position: absolute;
+    left: 0px;
+    top: 15px;
+    height: 25px;
+    width: 25px;
+}
+
 #item-list .todo .display, #item-list .todo .edit {
     margin-left: 30px;
     height: 100%;
@@ -207,6 +216,10 @@ h3 {
 
 #item-list .todo .destroy:hover {
     background-position: 0 -20px;
+}
+
+#item-list .todo:hover .reorder {
+    background: url('/reorder.png') no-repeat 0 0;
 }
 
 #item-list .todo .item-tags {
