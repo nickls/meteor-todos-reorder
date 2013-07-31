@@ -174,8 +174,9 @@ Template.todos.todos = function () {
   if (tag_filter)
     sel.tags = tag_filter;
 
-  return Todos.find(sel, {sort: {timestamp: 1}});
+  return Todos.find(sel, {sort: {dragorder: 1}});
 };
+
 
 Template.todo_item.tag_objs = function () {
   var todo_id = this._id;
@@ -203,6 +204,39 @@ Template.todo_item.adding_tag = function () {
 Template.todo_item.events({
   'click .check': function () {
     Todos.update(this._id, {$set: {done: !this.done}});
+  },
+
+  'drop li.todo': function (evt, tmpl) {
+    //console.log('drop');
+    evt.preventDefault();
+    selected = Session.get('dragselected');
+
+    if (selected._id != this._id) {
+      //console.log(this);
+      selected_order = selected.dragorder;
+      Todos.update(selected._id, {$set : {dragorder: this.dragorder}});
+      Todos.update(this._id, {$set : {dragorder: selected_order}});
+    }
+    return false;
+  },
+
+  'dragenter li.todo': function (evt, tmpl) {
+    evt.target.classList.add('over');
+  },
+
+  'dragleave li.todo': function (evt, tmpl) {
+    evt.target.classList.remove('over');
+  },
+
+  'dragover li.todo': function (evt, tmpl) {
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'move';
+    return false;
+  },
+
+  'dragstart li.todo': function (evt, tmpl) {
+    evt.target.style.opacity = '0.4';
+    Session.set('dragselected', this);
   },
 
   'click .destroy': function () {
